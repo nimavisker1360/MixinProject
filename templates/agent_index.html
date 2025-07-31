@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ربات هوشمند خرید ترکیه - Agent Chat</title>
+    
+    <!-- Meta tags for PWA -->
+    <meta name="description" content="ربات هوشمند خرید محصولات ترکیه‌ای با ترجمه فارسی">
+    <meta name="theme-color" content="#2E8B57">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Agent Chat Bot">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Persian/Arabic Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FF6B35;
+            --accent-color: #4CAF50;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --background-light: #F8F9FA;
+            --border-light: #E9ECEF;
+        }
+        
+        * {
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .chat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+        
+        .chat-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chat-header .subtitle {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chat-body {
+            padding: 40px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+        
+        .feature-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-list li:hover {
+            transform: translateX(-5px);
+            background: var(--background-light);
+            margin: 0 -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-radius: 10px;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-left: 15px;
+            color: var(--primary-color);
+        }
+        
+        .telegram-btn {
+            background: linear-gradient(135deg, #0088cc, #0088ff);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 136, 204, 0.4);
+            color: white;
+        }
+        
+        .telegram-btn i {
+            margin-left: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .info-section {
+            background: var(--background-light);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .info-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+            
+            .chat-body {
+                padding: 25px;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .chat-header .subtitle {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .feature-list li {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .feature-list li:nth-child(1) { animation-delay: 0.1s; }
+        .feature-list li:nth-child(2) { animation-delay: 0.2s; }
+        .feature-list li:nth-child(3) { animation-delay: 0.3s; }
+        .feature-list li:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="chat-card">
+            <div class="chat-header">
+                <h1>🤖 ربات هوشمند خرید ترکیه</h1>
+                <div class="subtitle">Agent Chat - نسخه پیشرفته</div>
+            </div>
+            
+            <div class="chat-body">
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold text-center mb-3">🎯 قابلیت‌های ربات هوشمند</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon">🔍</span>
+                            <div>
+                                <strong>جستجوی هوشمند محصولات</strong>
+                                <div class="text-muted small">جستجو در فروشگاه‌های معتبر ترکیه با ترجمه فارسی</div>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon">🖼️</span>
+                            <div>
+                                <strong>تشخیص تصاویر</strong>
+                                <div class="text-muted small">ارسال تصویر محصول و پیدا کردن موارد مشابه</div>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon">🎤</span>
+                            <div>
+                                <strong>پردازش پیام صوتی</strong>
+                                <div class="text-muted small">تبدیل گفتار فارسی به جستجوی محصول</div>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon">🏪</span>
+                            <div>
+                                <strong>ادغام فروشگاه فارسی</strong>
+                                <div class="text-muted small">اتصال مستقیم با پایگاه داده فروشگاه‌های ایرانی</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3>📊 آمار عملکرد ربات</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">0.188s</span>
+                            <div class="stat-label">زمان پاسخ</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <div class="stat-label">نرخ موفقیت</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">40+</span>
+                            <div class="stat-label">محصول در جستجو</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">24/7</span>
+                            <div class="stat-label">در دسترس</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="h6 fw-bold mb-3">🛍️ دسته‌بندی‌های محصولات</h4>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-4">
+                            <div class="badge bg-light text-dark w-100 p-2">👗 لباس</div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="badge bg-light text-dark w-100 p-2">💄 آرایشی</div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="badge bg-light text-dark w-100 p-2">📱 موبایل</div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="badge bg-light text-dark w-100 p-2">🧸 اسباب بازی</div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="badge bg-light text-dark w-100 p-2">🐕 حیوانات</div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="badge bg-light text-dark w-100 p-2">💊 ویتامین</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Telegram Bot Link -->
+                <a href="https://t.me/YourAgentChatBot" class="telegram-btn" target="_blank">
+                    <i>📱</i>
+                    شروع چت با ربات در تلگرام
+                </a>
+                
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        🔐 امن • ⚡ سریع • 🌟 هوشمند<br>
+                        Based on mixinproject repository
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('✅ SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('❌ SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
