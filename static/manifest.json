@@ -1,0 +1,50 @@
+{
+  "name": "GStyle - Turkish Shopping",
+  "short_name": "GStyle",
+  "description": "بهترین محصولات ترکیه با قیمت‌های مناسب",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/static/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "جستجو",
+      "short_name": "Search",
+      "description": "جستجوی محصولات",
+      "url": "/search",
+      "icons": [{ "src": "/static/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "علاقه‌مندی‌ها",
+      "short_name": "Favorites",
+      "description": "محصولات مورد علاقه",
+      "url": "/favorites",
+      "icons": [{ "src": "/static/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

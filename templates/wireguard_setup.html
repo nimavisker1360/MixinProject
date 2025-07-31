@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راه‌اندازی WireGuard VPN - GStyle</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cimri-blue': '#2563eb',
+                        'cimri-light': '#f8fafc',
+                        'cimri-gray': '#64748b',
+                        'persian-text': '#1e293b'
+                    },
+                    fontFamily: {
+                        'persian': ['Tahoma', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Tahoma', Arial, sans-serif;
+        }
+        .config-textarea {
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="bg-cimri-light min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold text-cimri-blue">GStyle</a>
+                    <span class="text-sm text-cimri-gray mr-2">راه‌اندازی WireGuard</span>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <a href="/mixin-status" class="text-cimri-blue hover:text-blue-700">← بازگشت به وضعیت</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-persian-text mb-4">راه‌اندازی WireGuard VPN</h1>
+            <p class="text-cimri-gray">برای اتصال به فروشگاه Mixin.ir از طریق VPN</p>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-6">
+            <h2 class="text-xl font-semibold text-persian-text mb-4">📋 دستورالعمل</h2>
+            <div class="space-y-3 text-cimri-gray">
+                <p><strong class="text-persian-text">مرحله ۱:</strong> فایل کانفیگ WireGuard خود را تهیه کنید (.conf)</p>
+                <p><strong class="text-persian-text">مرحله ۲:</strong> محتویات فایل را در کادر زیر قرار دهید</p>
+                <p><strong class="text-persian-text">مرحله ۳:</strong> روی دکمه "تست و راه‌اندازی" کلیک کنید</p>
+                <p><strong class="text-persian-text">مرحله ۴:</strong> در صورت موفقیت، اتصال به فروشگاه برقرار می‌شود</p>
+            </div>
+        </div>
+
+        <!-- Configuration Form -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <form id="wireguardForm">
+                <div class="mb-6">
+                    <label for="config" class="block text-sm font-medium text-persian-text mb-2">
+                        کانفیگ WireGuard
+                    </label>
+                    <textarea 
+                        id="config" 
+                        name="config" 
+                        rows="15" 
+                        class="config-textarea w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cimri-blue focus:border-transparent"
+                        placeholder="[Interface]
+PrivateKey = YOUR_PRIVATE_KEY
+Address = 10.0.0.2/24
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = SERVER_PUBLIC_KEY  
+Endpoint = your-vpn-server.com:51820
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25"
+                        required></textarea>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button 
+                        type="submit" 
+                        id="setupBtn"
+                        class="bg-cimri-blue text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        🚀 تست و راه‌اندازی VPN
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        onclick="testCurrentSetup()"
+                        class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        🧪 تست اتصال فعلی
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Status Display -->
+        <div id="statusDisplay" class="mt-6 hidden">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-persian-text mb-4">📊 وضعیت راه‌اندازی</h3>
+                <div id="statusContent" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div id="testResults" class="mt-6 hidden">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-persian-text mb-4">🧪 نتایج تست</h3>
+                <div id="testContent" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- Example Config -->
+        <div class="mt-8">
+            <details class="bg-gray-50 rounded-lg p-4">
+                <summary class="font-medium text-persian-text cursor-pointer">نمونه کانفیگ WireGuard</summary>
+                <div class="mt-4">
+                    <pre class="config-textarea bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">[Interface]
+PrivateKey = yAnz5TF+lXXJte14tji3zlMNq+hd2rYUIgJBgB3fBmk=
+Address = 10.66.66.15/32
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = XIJf36dPaINoEhz84Lr1J73O5BLGPIxo7nI4TqGnhWQ=
+Endpoint = 138.68.123.45:51820
+AllowedIPs = 0.0.0.0/0, ::/0
+PersistentKeepalive = 25</pre>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('wireguardForm');
+        const setupBtn = document.getElementById('setupBtn');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const statusContent = document.getElementById('statusContent');
+        const testResults = document.getElementById('testResults');
+        const testContent = document.getElementById('testContent');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const config = document.getElementById('config').value;
+            if (!config.trim()) {
+                alert('لطفا کانفیگ WireGuard را وارد کنید');
+                return;
+            }
+
+            setupBtn.disabled = true;
+            setupBtn.innerHTML = '⏳ در حال راه‌اندازی...';
+            
+            showStatus('در حال پردازش کانفیگ WireGuard...', 'info');
+
+            try {
+                const response = await fetch('/setup-wireguard', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `config=${encodeURIComponent(config)}`
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('✅ WireGuard با موفقیت راه‌اندازی شد!', 'success');
+                    showStatus('🧪 در حال تست اتصال به Mixin API...', 'info');
+                    
+                    // Test Mixin API connectivity
+                    setTimeout(testMixinAPI, 2000);
+                } else {
+                    showStatus(`❌ خطا در راه‌اندازی: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ خطای شبکه: ${error.message}`, 'error');
+            } finally {
+                setupBtn.disabled = false;
+                setupBtn.innerHTML = '🚀 تست و راه‌اندازی VPN';
+            }
+        });
+
+        async function testCurrentSetup() {
+            showTestResults('🔍 در حال تست اتصال فعلی...', 'info');
+            
+            try {
+                const response = await fetch('/api/test-mixin-connectivity');
+                const result = await response.json();
+                
+                if (result.success) {
+                    showTestResults(`✅ اتصال موفق! دسته‌بندی‌های یافت شده: ${result.categories_found}`, 'success');
+                    showTestResults(`⏱️ زمان پاسخ: ${result.response_time} ثانیه`, 'info');
+                } else {
+                    showTestResults(`❌ اتصال ناموفق: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showTestResults(`❌ خطا در تست: ${error.message}`, 'error');
+            }
+        }
+
+        async function testMixinAPI() {
+            try {
+                const response = await fetch('/api/test-mixin-connectivity');
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus(`🎉 اتصال به Mixin API برقرار شد!`, 'success');
+                    showStatus(`📊 تعداد دسته‌بندی‌های یافت شده: ${result.categories_found}`, 'success');
+                    showStatus(`⏱️ زمان پاسخ: ${result.response_time} ثانیه`, 'info');
+                } else {
+                    showStatus(`⚠️ اتصال VPN برقرار اما Mixin API در دسترس نیست`, 'warning');
+                    showStatus(`خطا: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ خطا در تست Mixin API: ${error.message}`, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            statusDisplay.classList.remove('hidden');
+            const div = document.createElement('div');
+            div.className = `p-3 rounded ${getTypeClass(type)}`;
+            div.textContent = message;
+            statusContent.appendChild(div);
+            div.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showTestResults(message, type) {
+            testResults.classList.remove('hidden');
+            const div = document.createElement('div');
+            div.className = `p-3 rounded ${getTypeClass(type)}`;
+            div.textContent = message;
+            testContent.appendChild(div);
+            div.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getTypeClass(type) {
+            switch(type) {
+                case 'success': return 'bg-green-100 text-green-800 border border-green-200';
+                case 'error': return 'bg-red-100 text-red-800 border border-red-200';
+                case 'warning': return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+                case 'info': default: return 'bg-blue-100 text-blue-800 border border-blue-200';
+            }
+        }
+    </script>
+</body>
+</html>

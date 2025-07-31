@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Analytics Dashboard - Turkish Beauty & Fashion Bot</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <!-- Header Section -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-5 mb-3">
+                    <i class="fas fa-chart-line text-info me-3"></i>
+                    Bot Analytics Dashboard
+                </h1>
+                <p class="lead">
+                    Real-time statistics and insights for Turkish Beauty & Fashion Bot
+                </p>
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <a href="/" class="btn btn-outline-primary">
+                        <i class="fas fa-home me-2"></i>Main Page
+                    </a>
+                    <a href="/health" class="btn btn-outline-success">
+                        <i class="fas fa-heartbeat me-2"></i>Health Check
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if analytics %}
+        <!-- Statistics Cards -->
+        <div class="row mb-5">
+            <div class="col-md-3 mb-4">
+                <div class="card bg-primary bg-opacity-10 border-primary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                        <h3 class="text-primary">{{ "{:,}".format(analytics.total_users) }}</h3>
+                        <p class="mb-0">Total Users</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card bg-info bg-opacity-10 border-info">
+                    <div class="card-body text-center">
+                        <i class="fas fa-search fa-2x text-info mb-3"></i>
+                        <h3 class="text-info">{{ "{:,}".format(analytics.total_searches) }}</h3>
+                        <p class="mb-0">Total Searches</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card bg-warning bg-opacity-10 border-warning">
+                    <div class="card-body text-center">
+                        <i class="fas fa-box fa-2x text-warning mb-3"></i>
+                        <h3 class="text-warning">{{ "{:,}".format(analytics.total_products) }}</h3>
+                        <p class="mb-0">Products Discovered</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card bg-danger bg-opacity-10 border-danger">
+                    <div class="card-body text-center">
+                        <i class="fas fa-heart fa-2x text-danger mb-3"></i>
+                        <h3 class="text-danger">{{ "{:,}".format(analytics.total_favorites) }}</h3>
+                        <p class="mb-0">Total Favorites</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Products -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-fire text-danger me-2"></i>
+                            Most Popular Products
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if analytics.popular_products %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Product</th>
+                                            <th>Store</th>
+                                            <th>Price</th>
+                                            <th>Favorites</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analytics.popular_products[:10] %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-primary">{{ loop.index }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ item.product.title[:50] }}{% if item.product.title|length > 50 %}...{% endif %}</div>
+                                                <small class="text-muted">{{ item.product.snippet[:80] if item.product.snippet else 'No description' }}{% if item.product.snippet and item.product.snippet|length > 80 %}...{% endif %}</small>
+                                            </td>
+                                            <td>{{ item.product.store }}</td>
+                                            <td>
+                                                <span class="fw-bold">{{ "%.2f"|format(item.product.price_try) }} ₺</span><br>
+                                                <small class="text-muted">{{ "{:,}".format(item.product.price_toman) }} تومان</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-heart me-1"></i>{{ item.favorite_count }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No popular products data yet. Users haven't started adding favorites.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Features -->
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-database text-success me-2"></i>
+                            Database Features
+                        </h5>
+                        <p class="card-text">
+                            The bot now includes comprehensive database functionality for enhanced user experience.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>User registration and tracking</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Search history logging</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Product favorites system</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Usage analytics and statistics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-terminal text-secondary me-2"></i>
+                            New Bot Commands
+                        </h5>
+                        <p class="card-text">
+                            Additional commands are now available for users to interact with their data.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-heart text-danger me-2"></i><code>/favorites</code> - View saved products</li>
+                            <li><i class="fas fa-history text-info me-2"></i><code>/history</code> - View search history</li>
+                            <li><i class="fas fa-chart-bar text-warning me-2"></i><code>/stats</code> - View bot statistics</li>
+                            <li><i class="fas fa-heart text-danger me-2"></i><code>❤️3</code> - Add product #3 to favorites</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Error State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-warning">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4>Analytics Data Unavailable</h4>
+                        <p class="text-muted">Unable to load analytics data. The database might be initializing.</p>
+                        <button onclick="window.location.reload()" class="btn btn-warning">
+                            <i class="fas fa-refresh me-2"></i>Refresh Page
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Success Status -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-success bg-opacity-10 border-success">
+                    <div class="card-header border-success">
+                        <h5 class="text-success mb-0">
+                            <i class="fas fa-database me-2"></i>
+                            Database Integration Complete
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3"><strong>Date:</strong> July 14, 2025</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-success">Database Features Added:</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>PostgreSQL database integration</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>User management system</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Search history tracking</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Product favorites functionality</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-success">Enhanced Bot Capabilities:</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>Real-time analytics dashboard</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>User engagement tracking</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Popular products insights</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Persistent user sessions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Auto refresh every 30 seconds -->
+    <script>
+        // Auto-refresh analytics data every 30 seconds
+        setTimeout(function() {
+            window.location.reload();
+        }, 30000);
+        
+        // Add loading animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

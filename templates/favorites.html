@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}علاقه‌مندی‌ها - GStyle{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-persian-text mb-2">علاقه‌مندی‌ها</h1>
+        <p class="text-cimri-gray">{{ favorites|length }} محصول در لیست علاقه‌مندی‌های شما</p>
+    </div>
+
+    {% if favorites %}
+        <!-- Favorites Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for favorite in favorites %}
+            <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden" data-favorite-id="{{ favorite.id }}">
+                <!-- Product Image -->
+                <div class="relative h-48 bg-gray-100">
+                    {% if favorite.product_image %}
+                        <img src="{{ favorite.product_image }}" alt="{{ favorite.product_title }}" 
+                             class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Remove from Favorites Button -->
+                    <button onclick="removeFavorite('{{ favorite.product_link }}', this)" 
+                            class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+                        <svg class="w-5 h-5 text-red-500 fill-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Product Info -->
+                <div class="p-4">
+                    <h3 class="text-sm font-medium text-persian-text mb-2 line-clamp-2">
+                        {{ favorite.product_title }}
+                    </h3>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-lg font-bold text-cimri-blue">
+                            {{ "{:,}".format(favorite.product_price|int) }} تومان
+                        </span>
+                        <span class="text-xs text-cimri-gray">
+                            {{ favorite.added_at.strftime('%Y/%m/%d') }}
+                        </span>
+                    </div>
+                    
+                    <p class="text-xs text-cimri-gray mb-3">{{ favorite.product_source }}</p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2 space-x-reverse">
+                        <button onclick="addToCart('{{ favorite.product_link }}')" 
+                                class="flex-1 bg-cimri-blue text-white py-2 px-3 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                            افزودن به سبد
+                        </button>
+                        <a href="{{ favorite.product_link }}" target="_blank" 
+                           class="flex-1 bg-gray-100 text-persian-text py-2 px-3 rounded-lg text-sm text-center hover:bg-gray-200 transition-colors">
+                            مشاهده
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+            <h3 class="text-xl font-medium text-persian-text mb-2">هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید</h3>
+            <p class="text-cimri-gray mb-6">محصولات مورد علاقه خود را با کلیک بر روی قلب کنار محصولات اضافه کنید</p>
+            <a href="{{ url_for('index') }}" 
+               class="bg-cimri-blue text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                شروع خرید
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const favoritesData = {{ favorites | tojson }};
+
+    function removeFavorite(productLink, button) {
+        fetch('/api/remove-from-favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                link: productLink
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.closest('.product-card').remove();
+                updateCounters();
+                showNotification(data.message, 'success');
+                
+                // Update page count
+                const remaining = document.querySelectorAll('.product-card').length;
+                const countElement = document.querySelector('p.text-cimri-gray');
+                countElement.textContent = `${remaining} محصول در لیست علاقه‌مندی‌های شما`;
+                
+                // Show empty state if no items left
+                if (remaining === 0) {
+                    location.reload();
+                }
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('خطا در حذف از علاقه‌مندی‌ها', 'error');
+        });
+    }
+
+    function addToCart(productLink) {
+        const favorite = favoritesData.find(f => f.product_link === productLink);
+        if (!favorite) return;
+        
+        fetch('/api/add-to-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: favorite.product_title,
+                price: favorite.product_price,
+                image: favorite.product_image,
+                link: favorite.product_link,
+                source: favorite.product_source,
+                quantity: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateCounters();
+                showNotification(data.message, 'success');
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('خطا در اضافه کردن به سبد خرید', 'error');
+        });
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+</script>
+{% endblock %}

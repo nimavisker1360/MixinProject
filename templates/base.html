@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GStyle - Turkish Shopping{% endblock %}</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GStyle">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cimri-blue': '#2563eb',
+                        'cimri-light': '#f8fafc',
+                        'cimri-gray': '#64748b',
+                        'persian-text': '#1e293b'
+                    },
+                    fontFamily: {
+                        'persian': ['Tahoma', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Tahoma', Arial, sans-serif;
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .category-card:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-cimri-light min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-2xl font-bold text-cimri-blue">
+                        GStyle
+                    </a>
+                    <span class="text-sm text-cimri-gray mr-2">Turkish Shopping</span>
+                </div>
+                
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex flex-1 max-w-lg mx-8">
+                    <form action="{{ url_for('search') }}" method="GET" class="w-full">
+                        <div class="relative">
+                            <input type="text" name="q" placeholder="جستجوی محصولات..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cimri-blue focus:border-transparent text-right">
+                            <button type="submit" class="absolute left-3 top-2.5 text-gray-400 hover:text-cimri-blue">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <!-- Free browsing mode - no authentication required -->
+                    <div class="text-sm text-cimri-gray">
+                        مرور رایگان محصولات ترکیه
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Search -->
+        <div class="md:hidden px-4 pb-3">
+            <form action="{{ url_for('search') }}" method="GET">
+                <div class="relative">
+                    <input type="text" name="q" placeholder="جستجوی محصولات..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cimri-blue focus:border-transparent text-right">
+                    <button type="submit" class="absolute left-3 top-2.5 text-gray-400 hover:text-cimri-blue">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mb-4 p-4 rounded-lg {% if category == 'error' %}bg-red-50 text-red-800 border border-red-200{% elif category == 'success' %}bg-green-50 text-green-800 border border-green-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-persian-text mb-4">GStyle</h3>
+                    <p class="text-cimri-gray text-sm">بهترین محصولات ترکیه با قیمت‌های مناسب</p>
+                </div>
+                <div>
+                    <h4 class="font-medium text-persian-text mb-4">خدمات</h4>
+                    <ul class="space-y-2 text-sm text-cimri-gray">
+                        <li><a href="#" class="hover:text-cimri-blue">راهنمای خرید</a></li>
+                        <li><a href="#" class="hover:text-cimri-blue">شرایط ارسال</a></li>
+                        <li><a href="#" class="hover:text-cimri-blue">ضمانت کیفیت</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-persian-text mb-4">پشتیبانی</h4>
+                    <ul class="space-y-2 text-sm text-cimri-gray">
+                        <li><a href="#" class="hover:text-cimri-blue">تماس با ما</a></li>
+                        <li><a href="#" class="hover:text-cimri-blue">سوالات متداول</a></li>
+                        <li><a href="#" class="hover:text-cimri-blue">@gstyle_support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-persian-text mb-4">دسته‌بندی‌ها</h4>
+                    <ul class="space-y-2 text-sm text-cimri-gray">
+                        <li><a href="{{ url_for('category', name='fashion') }}" class="hover:text-cimri-blue">مد و پوشاک</a></li>
+                        <li><a href="{{ url_for('category', name='beauty') }}" class="hover:text-cimri-blue">زیبایی</a></li>
+                        <li><a href="{{ url_for('category', name='electronics') }}" class="hover:text-cimri-blue">الکترونیک</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-cimri-gray">
+                <p>&copy; 2025 GStyle. تمامی حقوق محفوظ است.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for PWA and interactions -->
+    <script>
+        // Update cart and favorites counters (disabled for free browsing)
+        function updateCounters() {
+            // Free browsing mode - no counters needed
+            console.log('Free browsing mode - counters disabled');
+        }
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Update counters on page load
+        document.addEventListener('DOMContentLoaded', updateCounters);
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

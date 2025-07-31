@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}جستجو: {{ query }} - GStyle{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Search Results Header -->
+    <div class="mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-persian-text mb-2">
+                    نتایج جستجو برای "{{ query }}"
+                </h1>
+                <p class="text-cimri-gray">{{ products|length }} محصول یافت شد</p>
+            </div>
+            
+            {% if mixin_service_available and products %}
+            <div class="flex flex-col space-y-2">
+                <div class="flex space-x-3 space-x-reverse">
+                    <button onclick="bulkAddToMixinShop()" 
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        اضافه همه به فروشگاه من
+                    </button>
+                    <a href="{{ url_for('search', q=query, category=category, add_to_shop='true') }}" 
+                       class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                        جستجو و اضافه خودکار
+                    </a>
+                </div>
+                <div class="text-sm">
+                    <a href="{{ url_for('mixin_status') }}" class="text-cimri-blue hover:underline">
+                        📊 وضعیت اتصال فروشگاه
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if products %}
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for product in products %}
+            <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
+                <!-- Product Image -->
+                <div class="relative h-48 bg-gray-100">
+                    {% if product.image %}
+                        <img src="{{ product.image }}" alt="{{ product.persian_title or product.title }}" 
+                             class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Product Price Badge -->
+                    <div class="absolute top-3 right-3 bg-cimri-blue text-white px-2 py-1 rounded text-xs font-medium">
+                        {{ "{:,}".format(product.price_toman) }} تومان
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="p-4">
+                    <h3 class="text-sm font-medium text-persian-text mb-2 line-clamp-2">
+                        {{ product.persian_title or product.title }}
+                    </h3>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-lg font-bold text-cimri-blue">
+                            {{ "{:,}".format(product.price_toman) }} تومان
+                        </span>
+                        {% if product.rating and product.rating != 'N/A' %}
+                            <div class="flex items-center text-sm text-yellow-500">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                </svg>
+                                <span class="mr-1">{{ product.rating }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-xs text-cimri-gray mb-3">{{ product.source }}</p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col space-y-2">
+                        <div class="flex space-x-2 space-x-reverse">
+                            <a href="{{ product.link }}" target="_blank" 
+                               class="flex-1 bg-cimri-blue text-white py-2 px-3 rounded-lg text-sm text-center hover:bg-blue-700 transition-colors">
+                                مشاهده در فروشگاه
+                            </a>
+                            <button onclick="copyLink('{{ product.link }}')" 
+                                    class="bg-gray-100 text-persian-text py-2 px-3 rounded-lg text-sm hover:bg-gray-200 transition-colors">
+                                کپی لینک
+                            </button>
+                        </div>
+                        
+                        {% if mixin_service_available %}
+                        <button onclick="addToMixinShop({{ loop.index0 }})" 
+                                class="w-full bg-green-600 text-white py-2 px-3 rounded-lg text-sm hover:bg-green-700 transition-colors"
+                                id="mixin-btn-{{ loop.index0 }}">
+                            اضافه به فروشگاه من (Demo)
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if has_more %}
+            <div class="text-center mt-12">
+                <a href="{{ url_for('search', q=query, category=category, page=page+1) }}" 
+                   class="bg-cimri-blue text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    مشاهده محصولات بیشتر
+                </a>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <!-- No Results -->
+        <div class="text-center py-16">
+            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <h3 class="text-xl font-medium text-persian-text mb-2">محصولی یافت نشد</h3>
+            <p class="text-cimri-gray mb-6">لطفا با کلمات کلیدی دیگری جستجو کنید</p>
+            <a href="{{ url_for('index') }}" 
+               class="bg-cimri-blue text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                بازگشت به صفحه اصلی
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Free browsing mode functions
+    function copyLink(productLink) {
+        navigator.clipboard.writeText(productLink).then(function() {
+            showNotification('لینک محصول کپی شد', 'success');
+        }, function(err) {
+            showNotification('خطا در کپی کردن لینک', 'error');
+        });
+    }
+
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // Products data for Mixin integration
+    const products = {{ products | tojson | safe }};
+
+    // Add single product to Mixin shop
+    async function addToMixinShop(index) {
+        const product = products[index];
+        const button = document.getElementById(`mixin-btn-${index}`);
+        
+        // Update button state
+        button.disabled = true;
+        button.textContent = 'در حال اضافه کردن...';
+        button.className = button.className.replace('bg-green-600', 'bg-gray-400');
+        
+        try {
+            const response = await fetch('/api/add-to-mixin-shop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(product)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification(result.message, 'success');
+                button.textContent = 'اضافه شد ✓';
+                button.className = button.className.replace('bg-gray-400', 'bg-green-800');
+            } else {
+                showNotification(result.message, 'error');
+                // Reset button
+                button.disabled = false;
+                button.textContent = 'اضافه به فروشگاه من';
+                button.className = button.className.replace('bg-gray-400', 'bg-green-600');
+            }
+        } catch (error) {
+            showNotification('خطا در اتصال به سرور', 'error');
+            // Reset button
+            button.disabled = false;
+            button.textContent = 'اضافه به فروشگاه من';
+            button.className = button.className.replace('bg-gray-400', 'bg-green-600');
+        }
+    }
+
+    // Add all products to Mixin shop
+    async function bulkAddToMixinShop() {
+        if (!products || products.length === 0) {
+            showNotification('هیچ محصولی برای اضافه کردن یافت نشد', 'error');
+            return;
+        }
+
+        showNotification('در حال اضافه کردن محصولات...', 'success');
+        
+        try {
+            const response = await fetch('/api/bulk-add-to-mixin-shop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    products: products,
+                    category: '{{ category }}'
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification(result.message, 'success');
+                
+                // Update all buttons to show added state
+                products.forEach((product, index) => {
+                    const button = document.getElementById(`mixin-btn-${index}`);
+                    if (button) {
+                        button.disabled = true;
+                        button.textContent = 'اضافه شد ✓';
+                        button.className = button.className.replace('bg-green-600', 'bg-green-800');
+                    }
+                });
+            } else {
+                showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            showNotification('خطا در اتصال به سرور', 'error');
+        }
+    }
+</script>
+{% endblock %}

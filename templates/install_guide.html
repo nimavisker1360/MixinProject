@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>راهنمای نصب - Gstyle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 1rem;
+        }
+        
+        .install-section {
+            background: #111;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .step {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-right: 4px solid #007aff;
+        }
+        
+        .step-number {
+            background: #007aff;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        
+        .step-text {
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .highlight {
+            background: #333;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .back-button {
+            background: #007aff;
+            color: #fff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-button:hover {
+            background: #0056b3;
+        }
+        
+        .device-icon {
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .install-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Gstyle</div>
+            <div class="subtitle">راهنمای نصب اپلیکیشن</div>
+        </div>
+        
+        <!-- iOS Installation -->
+        <div class="install-section">
+            <div class="section-title">
+                <span class="device-icon">📱</span>
+                نصب روی آیفون (iOS)
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-text">
+                    سایت را در <span class="highlight">Safari</span> باز کنید (نه Chrome یا مرورگر دیگر)
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-text">
+                    روی دکمه <span class="highlight">Share</span> (مربع با فلش رو به بالا) در پایین صفحه کلیک کنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <div class="step-text">
+                    گزینه <span class="highlight">"Add to Home Screen"</span> را انتخاب کنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <div class="step-text">
+                    نام اپلیکیشن را تایید کرده و <span class="highlight">"Add"</span> را بزنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                <div class="step-text">
+                    اپلیکیشن روی صفحه اصلی شما نصب می‌شود و مثل یک اپ معمولی کار می‌کند
+                </div>
+            </div>
+        </div>
+        
+        <!-- Android Installation -->
+        <div class="install-section">
+            <div class="section-title">
+                <span class="device-icon">📱</span>
+                نصب روی اندروید
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-text">
+                    سایت را در <span class="highlight">Chrome</span> یا <span class="highlight">Edge</span> باز کنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-text">
+                    روی منوی <span class="highlight">⋮</span> (سه نقطه) در گوشه بالا کلیک کنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <div class="step-text">
+                    گزینه <span class="highlight">"Add to Home screen"</span> یا <span class="highlight">"Install app"</span> را انتخاب کنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <div class="step-text">
+                    نام اپلیکیشن را تایید کرده و <span class="highlight">"Add"</span> یا <span class="highlight">"Install"</span> را بزنید
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                <div class="step-text">
+                    اپلیکیشن روی صفحه اصلی شما نصب می‌شود و آیکون اختصاری Gstyle ایجاد می‌شود
+                </div>
+            </div>
+        </div>
+        
+        <!-- Benefits -->
+        <div class="install-section">
+            <div class="section-title">
+                <span class="device-icon">✨</span>
+                مزایای نصب اپلیکیشن
+            </div>
+            
+            <div class="step">
+                <div class="step-text">
+                    🚀 <strong>سرعت بالا:</strong> دسترسی فوری بدون باز کردن مرورگر
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-text">
+                    📱 <strong>تجربه اپ واقعی:</strong> مثل یک اپلیکیشن معمولی کار می‌کند
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-text">
+                    🔍 <strong>جستجوی هوشمند:</strong> متن، صدا، عکس و لینک محصولات
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-text">
+                    🇹🇷 <strong>محصولات ترکیه‌ای:</strong> مستقیم از فروشگاه‌های معتبر ترکیه
+                </div>
+            </div>
+        </div>
+        
+        <a href="/webapp" class="back-button">بازگشت به اپلیکیشن</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# SSH Keys
+*.pem
+*.ppk
+*_key_*
+hostinger_key_*
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Replit specific
+.replit
+replit.nix
+
+# Large attached assets
+attached_assets/*.jpeg
+attached_assets/*.jpg
+attached_assets/*.png
+attached_assets/*.zip
+attached_assets/*.app
+attached_assets/*.conf
+
+# Keep text files in attached_assets
+!attached_assets/*.txt
+!attached_assets/*.md
+
+# VPS deployment packages
+*.tar.gz
+deployment_package/
+vps_upload_package/
+final_deployment/
+
+# Migration files
+migration_package/

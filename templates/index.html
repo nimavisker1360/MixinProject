@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-cimri-blue to-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">
+                GStyle
+            </h1>
+            <p class="text-xl md:text-2xl text-blue-100 mb-8">
+                بهترین محصولات ترکیه با قیمت‌های مناسب
+            </p>
+            <div class="max-w-2xl mx-auto">
+                <form action="{{ url_for('search') }}" method="GET" class="flex">
+                    <input type="text" name="q" placeholder="جستجوی محصولات ترکیه..." 
+                           class="flex-1 px-6 py-4 text-lg rounded-r-lg text-persian-text focus:outline-none">
+                    <button type="submit" class="bg-white text-cimri-blue px-8 py-4 rounded-l-lg hover:bg-gray-50 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-3xl font-bold text-persian-text text-center mb-12">دسته‌بندی‌های محصولات</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Fashion Category -->
+        <a href="{{ url_for('category', name='fashion') }}" class="category-card group">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div class="h-48 bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center">
+                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-persian-text mb-2">👗 مد و پوشاک</h3>
+                    <p class="text-cimri-gray">لباس، کفش، کیف و اکسسوری</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Beauty Category -->
+        <a href="{{ url_for('category', name='beauty') }}" class="category-card group">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div class="h-48 bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
+                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-persian-text mb-2">💄 زیبایی و آرایش</h3>
+                    <p class="text-cimri-gray">لوازم آرایش، مراقبت پوست و مو</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Electronics Category -->
+        <a href="{{ url_for('category', name='electronics') }}" class="category-card group">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div class="h-48 bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
+                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-persian-text mb-2">📱 الکترونیک و موبایل</h3>
+                    <p class="text-cimri-gray">لوازم جانبی موبایل و کامپیوتر</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Toys Category -->
+        <a href="{{ url_for('category', name='toys') }}" class="category-card group">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div class="h-48 bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-persian-text mb-2">🧸 اسباب‌بازی و گجت</h3>
+                    <p class="text-cimri-gray">اسباب‌بازی کودک و گجت‌های هوشمند</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Pet Category -->
+        <a href="{{ url_for('category', name='pets') }}" class="category-card group">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div class="h-48 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-persian-text mb-2">🐕 حیوانات خانگی</h3>
+                    <p class="text-cimri-gray">غذا و لوازم سگ و گربه</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Health Category -->
+        <a href="{{ url_for('category', name='health') }}" class="category-card group">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div class="h-48 bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center">
+                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-persian-text mb-2">💊 سلامت و ویتامین</h3>
+                    <p class="text-cimri-gray">مکمل‌ها و محصولات سلامت</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-persian-text mb-4">چرا GStyle؟</h2>
+            <p class="text-cimri-gray text-lg">بهترین تجربه خرید آنلاین از ترکیه</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-cimri-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-persian-text mb-2">محصولات اصل</h3>
+                <p class="text-cimri-gray">تمامی محصولات از فروشگاه‌های معتبر ترکیه</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-cimri-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-persian-text mb-2">قیمت مناسب</h3>
+                <p class="text-cimri-gray">بهترین قیمت‌ها با تبدیل دقیق به تومان</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-cimri-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-persian-text mb-2">ارسال سریع</h3>
+                <p class="text-cimri-gray">ارسال مستقیم از ترکیه در کمترین زمان</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popular Categories Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-persian-text mb-4">محبوب‌ترین محصولات</h2>
+        <p class="text-cimri-gray text-lg">دسته‌بندی‌های پرطرفدار در GStyle</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Fashion Highlight -->
+        <a href="{{ url_for('category', name='fashion') }}" class="group">
+            <div class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-persian-text">مد و پوشاک</h3>
+                        <p class="text-cimri-gray">جدیدترین مدل‌های ترکیه</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- Beauty Highlight -->
+        <a href="{{ url_for('category', name='beauty') }}" class="group">
+            <div class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="w-16 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-persian-text">زیبایی و آرایش</h3>
+                        <p class="text-cimri-gray">بهترین برندهای ترکیه</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Free browsing mode - no user data loading needed
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('GStyle website loaded in free browsing mode');
+    });
+</script>
+{% endblock %}

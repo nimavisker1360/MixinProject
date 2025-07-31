@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}سبد خرید - GStyle{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-persian-text mb-2">سبد خرید</h1>
+        <p class="text-cimri-gray">{{ cart_items|length }} محصول در سبد خرید شما</p>
+    </div>
+
+    {% if cart_items %}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Cart Items -->
+            <div class="lg:col-span-2 space-y-4">
+                {% for item in cart_items %}
+                <div class="bg-white rounded-xl shadow-lg p-6 flex items-center space-x-4 space-x-reverse" data-cart-id="{{ item.id }}">
+                    <!-- Product Image -->
+                    <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                        {% if item.product_image %}
+                            <img src="{{ item.product_image }}" alt="{{ item.product_title }}" 
+                                 class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-sm font-medium text-persian-text truncate">{{ item.product_title }}</h3>
+                        <p class="text-xs text-cimri-gray mt-1">{{ item.product_source }}</p>
+                        <p class="text-lg font-bold text-cimri-blue mt-2">
+                            {{ "{:,}".format(item.product_price|int) }} تومان
+                        </p>
+                    </div>
+
+                    <!-- Quantity Controls -->
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <button onclick="updateQuantity('{{ item.product_link }}', {{ item.quantity - 1 }})" 
+                                class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                                {{ 'disabled' if item.quantity <= 1 else '' }}>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                            </svg>
+                        </button>
+                        
+                        <span class="w-8 text-center font-medium">{{ item.quantity }}</span>
+                        
+                        <button onclick="updateQuantity('{{ item.product_link }}', {{ item.quantity + 1 }})" 
+                                class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button onclick="removeFromCart('{{ item.product_link }}', this)" 
+                            class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-4">
+                    <h3 class="text-lg font-bold text-persian-text mb-4">خلاصه سفارش</h3>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-cimri-gray">تعداد اقلام:</span>
+                            <span class="font-medium">{{ cart_items|length }} محصول</span>
+                        </div>
+                        
+                        <div class="flex justify-between text-sm">
+                            <span class="text-cimri-gray">مجموع کل:</span>
+                            <span class="font-medium">{{ "{:,}".format(total|int) }} تومان</span>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-3">
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>قابل پرداخت:</span>
+                                <span class="text-cimri-blue">{{ "{:,}".format(total|int) }} تومان</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="createOrder()" 
+                            class="w-full bg-cimri-blue text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors mb-4">
+                        ثبت سفارش
+                    </button>
+                    
+                    <a href="{{ url_for('index') }}" 
+                       class="block text-center text-cimri-blue hover:text-blue-700 text-sm">
+                        ادامه خرید
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Empty Cart -->
+        <div class="text-center py-16">
+            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 7H3m4 6v6a2 2 0 002 2h8a2 2 0 002-2v-6"></path>
+            </svg>
+            <h3 class="text-xl font-medium text-persian-text mb-2">سبد خرید شما خالی است</h3>
+            <p class="text-cimri-gray mb-6">محصولات مورد نظر خود را به سبد خرید اضافه کنید</p>
+            <a href="{{ url_for('index') }}" 
+               class="bg-cimri-blue text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                شروع خرید
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateQuantity(productLink, newQuantity) {
+        if (newQuantity < 1) return;
+        
+        fetch('/api/update-cart-quantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                link: productLink,
+                quantity: newQuantity
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // Refresh to update totals
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('خطا در به‌روزرسانی تعداد', 'error');
+        });
+    }
+
+    function removeFromCart(productLink, button) {
+        fetch('/api/remove-from-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                link: productLink
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.closest('[data-cart-id]').remove();
+                updateCounters();
+                showNotification(data.message, 'success');
+                
+                // Check if cart is empty
+                const remaining = document.querySelectorAll('[data-cart-id]').length;
+                if (remaining === 0) {
+                    location.reload();
+                }
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('خطا در حذف از سبد خرید', 'error');
+        });
+    }
+
+    function createOrder() {
+        fetch('/api/create-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(`سفارش شما با شماره ${data.order_number} ثبت شد`, 'success');
+                setTimeout(() => {
+                    window.location.href = '/orders';
+                }, 2000);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('خطا در ثبت سفارش', 'error');
+        });
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+</script>
+{% endblock %}
